@@ -4,7 +4,7 @@ from app.api.endpoints import repositories, questions, audio, gemini, phone_call
 from app.core.settings import settings  # Updated to use new settings module
 
 app = FastAPI(
-    title="AI Code Explainer API",
+    title="UnveilAI API",
     description="API for the AI Code Explainer service using Google Gemini",
     version="0.1.0"
 )
