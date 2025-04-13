@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.endpoints import repositories, questions, audio, gemini, phonec_calls  # <-- Add gemini import
+from app.api.endpoints import repositories, questions, audio, gemini, phone_calls  # <-- Add gemini import
 from app.core.settings import settings  # Updated to use new settings module
 
 app = FastAPI(
