@@ -14,6 +14,7 @@ class BlandService:
         self.api_url = settings.BLAND_API_URL
         logger.info("Initialized Bland AI service")
 
+    headers = { authorization = f"{self.api_key}", }
     async def create_knowledge_base(self, name: str, description: str, text: str) -> str:
         """
         Create a knowledge base in Bland AI.
@@ -128,6 +129,8 @@ class BlandService:
                     headers=headers,
                     json=payload
                 )
+
+                print(self.api_url)
                 
                 response.raise_for_status()
                 return response.json()
@@ -154,7 +157,7 @@ class BlandService:
                 }
                 
                 response = await client.get(
-                    f"{self.api_url}/calls/{call_id}",
+                    f"{self.api_url}calls/{call_id}",
                     headers=headers
                 )
                 
