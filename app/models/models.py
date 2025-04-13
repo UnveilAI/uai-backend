@@ -77,3 +77,29 @@ class AudioResponse(BaseModel):
     audio_url: str
     duration_seconds: float
     format: AudioFormat
+
+
+class VectorStoreItem(BaseModel):
+    text: str
+    metadata: Optional[Dict[str, Any]] = None
+
+class PhoneCallRequest(BaseModel):
+    phone_number: str
+    knowledge_base_name: Optional[str] = None
+    knowledge_base_description: Optional[str] = None
+    knowledge_base_text: Optional[str] = None
+    knowledge_base_id: Optional[str] = None  # vector_id from previously created knowledge base
+    call_instructions: Optional[str] = None  # task in Bland API
+    voice_id: Optional[str] = None  # voice in Bland API
+    background_track: Optional[str] = None
+    first_sentence: Optional[str] = None
+    wait_for_greeting: Optional[bool] = False
+    block_interruptions: Optional[bool] = False
+    language: Optional[str] = "en-US"
+    record: Optional[bool] = False
+
+class PhoneCallResponse(BaseModel):
+    call_id: str
+    status: str
+    phone_number: str
+    knowledge_base_id: Optional[str] = None

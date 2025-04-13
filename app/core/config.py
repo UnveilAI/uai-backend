@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.api.endpoints import repositories, questions, audio, gemini  # <-- Add gemini import
+from app.api.endpoints import repositories, questions, audio, gemini, phone_calls  # <-- Add gemini import
 from app.core.settings import settings  # Updated to use new settings module
 
 app = FastAPI(
@@ -22,9 +22,9 @@ app.add_middleware(
 app.include_router(repositories.router, prefix="/api/repositories", tags=["repositories"])
 app.include_router(questions.router, prefix="/api/questions", tags=["questions"])
 app.include_router(audio.router, prefix="/api/audio", tags=["audio"])
-
-# New Gemini router
 app.include_router(gemini.router, prefix="/api/gemini", tags=["gemini"])
+app.include_router(phone_calls.router, prefix="/api/phone-calls", tags=["phone-calls"])
+
 
 @app.get("/")
 async def root():
