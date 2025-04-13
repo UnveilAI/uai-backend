@@ -2,10 +2,11 @@ import os
 import google.generativeai as genai
 from typing import Dict, List, Any, Optional
 import logging
-from app.core.settings import settings  # Updated import
+from app.core.settings import settings
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
 
 class GeminiService:
     def __init__(self):
@@ -32,24 +33,27 @@ class GeminiService:
         """
         try:
             prompt = f"""
-            You are an expert code analyzer. Please analyze the following code:
+            You are an expert senior developer with years of experience. 
+            Analyze the following code with a focus on insights that would help a new team member:
 
             ```
             {code_content}
             ```
 
-            Provide a high-level overview of:
-            1. What this code does
-            2. Key functions/classes and their purposes
-            3. Any potential issues or improvements
+            Provide a practical, insightful analysis that:
+            1. Explains what this code does in clear, conversational language
+            2. Highlights any potential security vulnerabilities or bugs
+            3. Points out non-obvious patterns or design decisions
+            4. Identifies maintenance or scaling challenges
+            5. Suggests practical improvements
 
             Format your response as JSON with the following structure:
             {{
-                "overview": "A brief description of the code",
+                "overview": "A practical explanation of the code's purpose and function",
                 "key_components": [
-                    {{"name": "component_name", "type": "function/class/etc", "purpose": "description"}}
+                    {{"name": "component_name", "type": "function/class/etc", "purpose": "description with practical insights"}}
                 ],
-                "potential_issues": ["issue1", "issue2"],
+                "potential_issues": ["vulnerability1", "bug2", "issue3"],
                 "suggested_improvements": ["improvement1", "improvement2"]
             }}
             """
@@ -64,7 +68,8 @@ class GeminiService:
     async def answer_question(self,
                               question: str,
                               code_context: Optional[str] = None,
-                              repository_info: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+                              repository_info: Optional[Dict[str, Any]] = None,
+                              custom_prompt: Optional[str] = None) -> Dict[str, Any]:
         """
         Answer a question about code using the Gemini model.
 
@@ -72,43 +77,49 @@ class GeminiService:
             question: The question being asked
             code_context: Relevant code snippets for context
             repository_info: Information about the repository
+            custom_prompt: Optional custom prompt to override the default
 
         Returns:
             Dictionary with the answer and related information
         """
         try:
-            # Build the prompt based on available information
-            prompt_parts = ["You are an expert code explainer."]
+            # Use custom prompt if provided, otherwise build the default prompt
+            if custom_prompt:
+                full_prompt = custom_prompt
+            else:
+                # Build the prompt based on available information
+                prompt_parts = ["You are a senior developer mentoring a new team member."]
 
-            if repository_info:
-                repo_desc = f"Repository: {repository_info.get('name', 'Unknown')}"
-                if repository_info.get('description'):
-                    repo_desc += f" - {repository_info['description']}"
-                prompt_parts.append(repo_desc)
+                if repository_info:
+                    repo_desc = f"Repository: {repository_info.get('name', 'Unknown')}"
+                    if repository_info.get('description'):
+                        repo_desc += f" - {repository_info['description']}"
+                    prompt_parts.append(repo_desc)
 
-            if code_context:
-                prompt_parts.append(f"Here is the relevant code context:\n```\n{code_context}\n```")
+                if code_context:
+                    prompt_parts.append(f"Here is the relevant code context:\n```\n{code_context}\n```")
 
-            prompt_parts.append(f"Question: {question}")
+                prompt_parts.append(f"Question: {question}")
 
-            prompt_parts.append("""
-            Please provide a clear, concise explanation that would help a developer understand this code.
-            Include code snippets where relevant, and explain the reasoning behind implementation choices.
+                prompt_parts.append("""
+                Please provide a clear, practical explanation that would help a developer understand this code.
+                Focus on insights that would typically take months or years to discover, and highlight any security 
+                considerations or potential bugs.
 
-            Format your response as JSON with the following structure:
-            {
-                "text_response": "Your detailed explanation here",
-                "code_snippets": [
-                    {"language": "language_name", "code": "code_here", "explanation": "explanation_here"}
-                ],
-                "references": [
-                    {"type": "documentation/pattern/library", "name": "reference_name", "description": "brief_description"}
-                ]
-            }
-            """)
+                Format your response as JSON with the following structure:
+                {
+                    "text_response": "Your detailed explanation here",
+                    "code_snippets": [
+                        {"language": "language_name", "code": "code_here", "explanation": "explanation_here"}
+                    ],
+                    "references": [
+                        {"type": "best_practice/security/pattern", "name": "reference_name", "description": "brief_description"}
+                    ]
+                }
+                """)
 
-            # Join all prompt parts
-            full_prompt = "\n\n".join(prompt_parts)
+                # Join all prompt parts
+                full_prompt = "\n\n".join(prompt_parts)
 
             # Generate response from Gemini
             response = self.model.generate_content(full_prompt)
