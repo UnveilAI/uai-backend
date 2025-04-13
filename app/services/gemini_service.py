@@ -33,15 +33,14 @@ class GeminiService:
         try:
             prompt = f"""
             You are an expert code analyzer. Please analyze the following code:
-
-            ```
             {code_content}
-            ```
 
             Provide a high-level overview of:
             1. What this code does
             2. Key functions/classes and their purposes
             3. Any potential issues or improvements
+
+            IMPORTANT: Extract the most important code snippets that illustrate key functionality or patterns.
 
             Format your response as JSON with the following structure:
             {{
@@ -49,9 +48,18 @@ class GeminiService:
                 "key_components": [
                     {{"name": "component_name", "type": "function/class/etc", "purpose": "description"}}
                 ],
+                "key_code_snippets": [
+                    {{
+                        "code": "paste the actual code here",
+                        "explanation": "why this snippet is important",
+                        "location": "file/class/function where this appears"
+                    }}
+                ],
                 "potential_issues": ["issue1", "issue2"],
                 "suggested_improvements": ["improvement1", "improvement2"]
             }}
+
+            Ensure each snippet is complete enough to understand its function but focused on a single concept.
             """
 
             response = self.model.generate_content(prompt)
@@ -93,13 +101,22 @@ class GeminiService:
 
             prompt_parts.append("""
             Please provide a clear, concise explanation that would help a developer understand this code.
-            Include code snippets where relevant, and explain the reasoning behind implementation choices.
+
+            IMPORTANT: Include the MOST RELEVANT code snippets that directly answer the question or illustrate key concepts. Prioritize:
+            1. Code that directly implements the functionality being asked about
+            2. Important patterns or techniques used in the implementation
+            3. Entry points or interfaces that show how the code is used
 
             Format your response as JSON with the following structure:
             {
                 "text_response": "Your detailed explanation here",
                 "code_snippets": [
-                    {"language": "language_name", "code": "code_here", "explanation": "explanation_here"}
+                    {
+                        "language": "language_name", 
+                        "code": "code_here", 
+                        "explanation": "why this snippet is important for understanding the question",
+                        "context": "where this code appears in the larger codebase"
+                    }
                 ],
                 "references": [
                     {"type": "documentation/pattern/library", "name": "reference_name", "description": "brief_description"}
