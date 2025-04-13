@@ -39,6 +39,7 @@ class QuestionBase(BaseModel):
     repository_id: UUID
     question: str
     context: Optional[str] = None
+    phone: Optional[str] = None
 
 
 class QuestionCreate(QuestionBase):

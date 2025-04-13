@@ -7,6 +7,7 @@ from app.services.gemini_service import gemini_service
 from app.services.repository_service import repository_service
 from app.services.voice_service import voice_service
 import logging
+from app.services.bland_service import bland_service  
 
 # Configure logging
 logger = logging.getLogger(__name__)
