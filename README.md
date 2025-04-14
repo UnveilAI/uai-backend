@@ -21,6 +21,7 @@ A FastAPI backend service that supports analyzing code repositories with Google 
 - Python 3.9+
 - Git (for cloning repositories)
 - Google Gemini API key
+- Bland API key
 
 ## Installation
 
