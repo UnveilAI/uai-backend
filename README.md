@@ -1,6 +1,6 @@
 # UnveilAI Backend
 
-A FastAPI backend service that supports analyzing code repositories with Google Gemini and providing text and voice explanations.
+A FastAPI backend service that supports analyzing code repositories with Google Gemini and providing text and voice explanations with Bland.
 
 ## Features
 
@@ -13,7 +13,7 @@ A FastAPI backend service that supports analyzing code repositories with Google 
   - Get detailed explanations with code snippets and references
 - Voice response generation:
   - Convert text explanations to audio
-  - Support for multiple audio formats (MP3, WAV, OGG)
+  - Calls you like a senior developer would, carefully explaining concepts, and allowing you to "rubber-duck" with AI
 - API endpoints for easy integration with Next.js frontend
 
 ## Prerequisites
